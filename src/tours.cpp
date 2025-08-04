@@ -84,33 +84,30 @@ std::ostream& operator<<(std::ostream& os, Integer& i) {
     return os;
 }
 
-DECLARE_BINARY_AND_JSON_OPERATIONS(DcTour, tourdata_str, version, tours, objectives, faceoffs, unlock_groups, drivers,
-                                   ghosts, vehicle_classes, events, collections)
-DECLARE_BINARY_AND_JSON_OPERATIONS(Collection, id, name, unk2, unk3)
-DECLARE_BINARY_AND_JSON_OPERATIONS(Event, position_in_championship, race_id, event_id, unk4, trophy_id,
-                                   tour_menu_lams_id, gameplay_menu_lams_id, unlock_group, group_position, type_texture,
-                                   texture_small, texture_small_position, texture_large, entry_requirements,
-                                   fame_per_star_earned, trophy_completed, track, time_of_day, speed_of_time, weather,
-                                   precipitation, precipitation_time_scalar, unk5, difficulty, number_of_laps, type,
-                                   objectives, extra_star_requirements, grid_modifier, ai_grid_definitions,
-                                   fame_earned_on_positions)
-DECLARE_BINARY_AND_JSON_OPERATIONS(VehicleClass, id, name, vehicle_ids)
-DECLARE_BINARY_AND_JSON_OPERATIONS(Ghost, id, name, unk3, livery)
-DECLARE_BINARY_AND_JSON_OPERATIONS(Driver, id, unk2, name, country, pronoun, race, unk3, unk4, difficulty, team,
-                                   color_rgba, unk8, livery)
-DECLARE_BINARY_AND_JSON_OPERATIONS(UnlockGroup, id, tour_id, unk3, stars_to_unlock, unk5, unk6, unk7, unk8)
-DECLARE_BINARY_AND_JSON_OPERATIONS(FaceOff, id, unk2, name)
-DECLARE_BINARY_AND_JSON_OPERATIONS(Objective, id, objective_str, operator_type, lams_id, unk3)
-DECLARE_BINARY_AND_JSON_OPERATIONS(Tour, id, lams_id, unk3, license_mask, menu_texture, texture_tile_set,
-                                   is_tour_active, unk8, dlc_requirement, completed_texture, license_type,
-                                   included_in_collection)
-DECLARE_BINARY_AND_JSON_OPERATIONS(AiGridDefinition, driver_id, car_id, unk3, unk4)
-DECLARE_BINARY_AND_JSON_OPERATIONS(EventObjective, gold_objective_type, gold_objective_target_int,
-                                   gold_objective_target_str, silver_objective_type, silver_objective_target_int,
-                                   silver_objective_target_str)
+#define DBAJO DECLARE_BINARY_AND_JSON_OPERATIONS
+DBAJO(DcTour, tourdata_str, version, tours, objectives, faceoffs, unlock_groups, drivers, ghosts, vehicle_classes,
+      events, collections)
+DBAJO(Collection, id, name, unk2, unk3)
+DBAJO(Event, position_in_championship, race_id, event_id, unk4, trophy_id, tour_menu_lams_id, gameplay_menu_lams_id,
+      unlock_group, group_position, type_texture, texture_small, texture_small_position, texture_large,
+      entry_requirements, fame_per_star_earned, trophy_completed, track, time_of_day, speed_of_time, weather,
+      precipitation, precipitation_time_scalar, unk5, difficulty, number_of_laps, type, objectives,
+      extra_star_requirements, grid_modifier, ai_grid_definitions, fame_earned_on_positions)
+DBAJO(VehicleClass, id, name, vehicle_ids)
+DBAJO(Ghost, id, name, unk3, livery)
+DBAJO(Driver, id, unk2, name, country, pronoun, race, unk3, unk4, difficulty, team, color_rgba, unk8, livery)
+DBAJO(UnlockGroup, id, tour_id, unk3, stars_to_unlock, unk5, unk6, unk7, unk8)
+DBAJO(FaceOff, id, unk2, name)
+DBAJO(Objective, id, objective_str, operator_type, lams_id, unk3)
+DBAJO(Tour, id, lams_id, unk3, license_mask, menu_texture, texture_tile_set, is_tour_active, unk8, dlc_requirement,
+      completed_texture, license_type, included_in_collection)
+DBAJO(AiGridDefinition, driver_id, car_id, unk3, unk4)
+DBAJO(EventObjective, gold_objective_type, gold_objective_target_int, gold_objective_target_str, silver_objective_type,
+      silver_objective_target_int, silver_objective_target_str)
+#undef DBAJO
 
 void DcTour::LoadBinaryFile(const std::string& path) {
-    LOG_INFO("Loading \"{}\"...", path);
+    LOG_INFO("Loading \"{}\"", path);
     std::ifstream is(path, std::ios::binary);
     char signature[5], endianness[5];
     DcTour tour = DcTour();
@@ -122,7 +119,7 @@ void DcTour::LoadBinaryFile(const std::string& path) {
 }
 
 void DcTour::LoadJsonFile(const std::string& path) {
-    LOG_INFO("Loading \"{}\"...", path);
+    LOG_INFO("Loading \"{}\"", path);
     std::ifstream is(path, std::ios::binary);
     ordered_json j;
     is >> j;
