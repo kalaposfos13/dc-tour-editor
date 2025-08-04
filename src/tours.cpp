@@ -10,6 +10,8 @@
 
 namespace Evo {
 
+using nlohmann::json;
+
 template <typename T>
 T read_le(std::istream& is) {
     uint8_t bytes[sizeof(T)];
@@ -76,8 +78,8 @@ std::istream& operator>>(std::istream& is, Objective& o) {
 }
 
 std::istream& operator>>(std::istream& is, Tour& t) {
-    return is >> t.id >> t.tour_lams_id >> t.unk3 >> t.license_mask >> t.menu_texture >> t.unk6 >> t.is_tour_active >>
-           t.unk8 >> t.dlc_requirement >> t.tour_completed_texture >> t.tour_license_type >> t.included_in_collection;
+    return is >> t.id >> t.lams_id >> t.unk3 >> t.license_mask >> t.menu_texture >> t.unk6 >> t.is_tour_active >>
+           t.unk8 >> t.dlc_requirement >> t.completed_texture >> t.license_type >> t.included_in_collection;
 }
 
 std::istream& operator>>(std::istream& is, AiGridDefinition& d) {
@@ -160,8 +162,8 @@ std::ostream& operator<<(std::ostream& os, Objective& o) {
 }
 
 std::ostream& operator<<(std::ostream& os, Tour& t) {
-    return os << t.id << t.tour_lams_id << t.unk3 << t.license_mask << t.menu_texture << t.unk6 << t.is_tour_active
-              << t.unk8 << t.dlc_requirement << t.tour_completed_texture << t.tour_license_type
+    return os << t.id << t.lams_id << t.unk3 << t.license_mask << t.menu_texture << t.unk6 << t.is_tour_active
+              << t.unk8 << t.dlc_requirement << t.completed_texture << t.license_type
               << t.included_in_collection;
 }
 
@@ -211,19 +213,21 @@ void DcTour::LoadBinaryFile(const std::string& path) {
 }
 
 void DcTour::LoadJsonFile(const std::string& path) {
+    LOG_INFO("Loading \"{}\"...", path);
     LOG_ERROR("Stub");
 }
 
 void DcTour::SaveBinaryFile(const std::string& path) {
+    LOG_INFO("Saving \"{}\"", path);
     std::ofstream os(path, std::ios::binary);
     os << "EVOSLITL" << *this;
 }
 
 void DcTour::SaveJsonFile(const std::string& path) {
     LOG_INFO("Saving \"{}\"", path);
-    nlohmann::json json = (nlohmann::json)*this;
+    nlohmann::ordered_json j = *this;
     std::ofstream os(path);
-    os << std::setw(4) << json << std::endl;
+    os << std::setw(2) << j << std::endl;
 }
 
 } // namespace Evo
