@@ -285,8 +285,8 @@ public:
 class FaceOff {
 public:
     Integer id;
-    String unk2;
-    String name;
+    String ghost;
+    String opponent_name;
 };
 
 class UnlockGroup {
