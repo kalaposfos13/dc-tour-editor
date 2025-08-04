@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_subdirectory(externals)
 
 
-set(HEADERS
+set(FMT_HEADERS
     src/fmt/args.h
     src/fmt/base.h
     src/fmt/chrono.h
@@ -27,11 +27,16 @@ set(HEADERS
     src/fmt/xchar.h
 )
 
-set(HEADERS
-    ${FMT_HEEADERS}
+set (COMMON_HEADERS
     src/common/assert.h
     src/common/logging.h
     src/common/types.h
+)
+
+set(HEADERS
+    ${FMT_HEADERS}
+    ${COMMON_HEADERS}
+    src/tours.h
 )
 
 set(SOURCES
