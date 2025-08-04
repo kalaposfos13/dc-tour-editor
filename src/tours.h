@@ -129,7 +129,6 @@ public:
 inline void to_json(nlohmann::ordered_json& j, const String& s) {
     j = s.str();
 }
-
 inline void from_json(const nlohmann::ordered_json& j, String& s) {
     if (!j.is_string()) {
         UNREACHABLE();
@@ -142,6 +141,30 @@ inline void from_json(const nlohmann::ordered_json& j, String& s) {
 }
 std::istream& operator>>(std::istream& is, String& s);
 std::ostream& operator<<(std::ostream& os, String& s);
+
+class HexString : public String {
+};
+inline void to_json(nlohmann::ordered_json& j, const HexString& s) {
+    j = s.hex_str();
+}
+inline void from_json(const nlohmann::ordered_json& j, HexString& s) {
+    if (!j.is_string()) {
+        UNREACHABLE();
+    }
+    std::string hex = j.get<std::string>();
+    size_t len = hex.size();
+    if (len % 2 != 0) {
+        UNREACHABLE();
+    }
+    s.len.data = len / 2;
+    s.data.resize(s.len.data + 1);
+    for (s32 i = 0; i < s.len.data; ++i) {
+        std::string byte_str = hex.substr(i * 2, 2);
+        s.data[i] = static_cast<char>(std::stoul(byte_str, nullptr, 16));
+    }
+    s.data[s.len.data] = '\0';
+}
+
 
 template <typename T>
 class Array {
@@ -251,7 +274,7 @@ public:
     Integer unk6;
     Integer is_tour_active;
     Integer unk8;
-    String dlc_requirement;
+    HexString dlc_requirement;
     String completed_texture;
     Integer license_type;
     Integer included_in_collection;
