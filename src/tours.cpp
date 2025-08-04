@@ -78,7 +78,7 @@ std::istream& operator>>(std::istream& is, Objective& o) {
 }
 
 std::istream& operator>>(std::istream& is, Tour& t) {
-    return is >> t.id >> t.lams_id >> t.unk3 >> t.license_mask >> t.menu_texture >> t.unk6 >> t.is_tour_active >>
+    return is >> t.id >> t.lams_id >> t.unk3 >> t.license_mask >> t.menu_texture >> t.texture_tile_set >> t.is_tour_active >>
            t.unk8 >> t.dlc_requirement >> t.completed_texture >> t.license_type >> t.included_in_collection;
 }
 
@@ -162,7 +162,7 @@ std::ostream& operator<<(std::ostream& os, Objective& o) {
 }
 
 std::ostream& operator<<(std::ostream& os, Tour& t) {
-    return os << t.id << t.lams_id << t.unk3 << t.license_mask << t.menu_texture << t.unk6 << t.is_tour_active
+    return os << t.id << t.lams_id << t.unk3 << t.license_mask << t.menu_texture << t.texture_tile_set << t.is_tour_active
               << t.unk8 << t.dlc_requirement << t.completed_texture << t.license_type
               << t.included_in_collection;
 }

@@ -142,8 +142,7 @@ inline void from_json(const nlohmann::ordered_json& j, String& s) {
 std::istream& operator>>(std::istream& is, String& s);
 std::ostream& operator<<(std::ostream& os, String& s);
 
-class HexString : public String {
-};
+class HexString : public String {};
 inline void to_json(nlohmann::ordered_json& j, const HexString& s) {
     j = s.hex_str();
 }
@@ -164,7 +163,6 @@ inline void from_json(const nlohmann::ordered_json& j, HexString& s) {
     }
     s.data[s.len.data] = '\0';
 }
-
 
 template <typename T>
 class Array {
@@ -271,7 +269,7 @@ public:
     String unk3;
     String license_mask;
     String menu_texture;
-    Integer unk6;
+    Integer texture_tile_set;
     Integer is_tour_active;
     Integer unk8;
     HexString dlc_requirement;
@@ -279,8 +277,9 @@ public:
     Integer license_type;
     Integer included_in_collection;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Tour, id, lams_id, unk3, license_mask, menu_texture, unk6, is_tour_active, unk8,
-                                   dlc_requirement, completed_texture, license_type, included_in_collection)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Tour, id, lams_id, unk3, license_mask, menu_texture, texture_tile_set,
+                                   is_tour_active, unk8, dlc_requirement, completed_texture, license_type,
+                                   included_in_collection)
 std::istream& operator>>(std::istream& is, Tour& t);
 std::ostream& operator<<(std::ostream& os, Tour& t);
 
@@ -398,12 +397,12 @@ public:
     FixedArray<Integer, 12> fame_earned_on_positions;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Event, position_in_championship, race_id, event_id, unk4, trophy_id,
-                                   tour_menu_lams_id, gameplay_menu_lams_id, unlock_group, group_position,
-                                   type_texture, texture_small, texture_small_position, texture_large,
-                                   entry_requirements, fame_per_star_earned, trophy_completed, track, time_of_day,
-                                   speed_of_time, weather, precipitation, precipitation_time_scalar, unk5,
-                                   difficulty, number_of_laps, type, objectives, extra_star_requirements,
-                                   grid_modifier, ai_grid_definitions, fame_earned_on_positions)
+                                   tour_menu_lams_id, gameplay_menu_lams_id, unlock_group, group_position, type_texture,
+                                   texture_small, texture_small_position, texture_large, entry_requirements,
+                                   fame_per_star_earned, trophy_completed, track, time_of_day, speed_of_time, weather,
+                                   precipitation, precipitation_time_scalar, unk5, difficulty, number_of_laps, type,
+                                   objectives, extra_star_requirements, grid_modifier, ai_grid_definitions,
+                                   fame_earned_on_positions)
 std::istream& operator>>(std::istream& is, Event& e);
 std::ostream& operator<<(std::ostream& os, Event& e);
 
