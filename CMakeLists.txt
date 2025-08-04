@@ -27,7 +27,7 @@ set(FMT_HEADERS
     src/fmt/xchar.h
 )
 
-set (COMMON_HEADERS
+set(COMMON_HEADERS
     src/common/assert.h
     src/common/logging.h
     src/common/types.h
@@ -40,9 +40,10 @@ set(HEADERS
 )
 
 set(SOURCES
-    src/main.cpp
     src/common/assert.cpp
     src/fmt/format.cpp
+    src/main.cpp
+    src/tours.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})

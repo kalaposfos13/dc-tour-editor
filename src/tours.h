@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <cstring>
+#include <istream>
 #include <string>
 #include <vector>
 #include "common/types.h"
@@ -15,9 +17,7 @@ public:
     }
 };
 
-std::istream& operator>>(std::istream& is, Integer& i) {
-    return is >> i.data;
-}
+std::istream& operator>>(std::istream& is, Integer& i);
 
 class Float {
 public:
@@ -27,9 +27,7 @@ public:
     }
 };
 
-std::istream& operator>>(std::istream& is, Float& f) {
-    return is >> f.data;
-}
+std::istream& operator>>(std::istream& is, Float& f);
 
 class Boolean {
 public:
@@ -39,9 +37,7 @@ public:
     }
 };
 
-std::istream& operator>>(std::istream& is, Boolean& b) {
-    return is >> b.data;
-}
+std::istream& operator>>(std::istream& is, Boolean& b);
 
 class String {
 public:
@@ -52,16 +48,7 @@ public:
     }
 };
 
-std::istream& operator>>(std::istream& is, String& s) {
-    return is >> s.len;
-    char temp = '\0';
-    for (s32 i = 0; i < s.len; i++) {
-        is >> temp;
-        s.data.push_back(temp);
-    }
-    s.data.push_back('\0');
-    return is;
-}
+std::istream& operator>>(std::istream& is, String& s);
 
 template <typename T>
 class Array {
@@ -69,6 +56,9 @@ public:
     String name;
     Integer count;
     std::vector<T> data;
+    T& operator[](const size_t index) {
+        return data[index];
+    }
 };
 
 template <typename T>
@@ -76,7 +66,7 @@ std::istream& operator>>(std::istream& is, Array<T>& a) {
     is >> a.name >> a.count;
     for (int i = 0; i < a.count; i++) {
         T temp;
-        i >> temp;
+        is >> temp;
         a.data.push_back(temp);
     }
     return is;
@@ -90,9 +80,10 @@ public:
 
 template <typename T, s32 size>
 std::istream& operator>>(std::istream& is, FixedArray<T, size>& a) {
-    for (int i = 0; i < a.data.size(); i++) {
+    for (size_t i = 0; i < a.data.size(); i++) {
         is >> a.data[i];
     }
+    return is;
 }
 
 class ExtraStarRequirement {
@@ -105,10 +96,7 @@ public:
     String silver_objective_target_str;
 };
 
-std::istream& operator>>(std::istream& is, ExtraStarRequirement& r) {
-    return is >> r.gold_objective_type >> r.gold_objective_target_int >> r.gold_objective_target_str >>
-           r.silver_objective_type >> r.silver_objective_target_int >> r.silver_objective_target_str;
-}
+std::istream& operator>>(std::istream& is, ExtraStarRequirement& r);
 
 class AiGridDefinition {
 public:
@@ -118,9 +106,7 @@ public:
     Float unk4;
 };
 
-std::istream& operator>>(std::istream& is, AiGridDefinition& d) {
-    return is >> d.driver_id >> d.car_id >> d.unk3 >> d.unk4;
-}
+std::istream& operator>>(std::istream& is, AiGridDefinition& d);
 
 class Tour {
 public:
@@ -138,10 +124,7 @@ public:
     Integer included_in_collection;
 };
 
-std::istream& operator>>(std::istream& is, Tour& t) {
-    return is >> t.id >> t.tour_lams_id >> t.unk3 >> t.license_mask >> t.menu_texture >> t.unk6 >> t.is_tour_active >>
-           t.unk8 >> t.dlc_requirement >> t.tour_completed_texture >> t.tour_license_type >> t.included_in_collection;
-}
+std::istream& operator>>(std::istream& is, Tour& t);
 
 class Objective {
 public:
@@ -152,9 +135,7 @@ public:
     String unk3;
 };
 
-std::istream& operator>>(std::istream& is, Objective& o) {
-    return is >> o.id >> o.objective_str >> o.operator_type >> o.lams_id >> o.unk3;
-}
+std::istream& operator>>(std::istream& is, Objective& o);
 
 class FaceOff {
 public:
@@ -163,9 +144,7 @@ public:
     String name;
 };
 
-std::istream& operator>>(std::istream& is, FaceOff& f) {
-    return is >> f.id >> f.unk2 >> f.name;
-}
+std::istream& operator>>(std::istream& is, FaceOff& f);
 
 class UnlockGroup {
 public:
@@ -179,9 +158,7 @@ public:
     String unk8;
 };
 
-std::istream& operator>>(std::istream& is, UnlockGroup& u) {
-    return is >> u.id >> u.tour_id >> u.unk3 >> u.stars_to_unlock >> u.unk5 >> u.unk6 >> u.unk7 >> u.unk8;
-}
+std::istream& operator>>(std::istream& is, UnlockGroup& u);
 
 class Driver {
 public:
@@ -200,10 +177,7 @@ public:
     String livery;
 };
 
-std::istream& operator>>(std::istream& is, Driver& d) {
-    return is >> d.id >> d.unk2 >> d.name >> d.country >> d.pronoun >> d.race >> d.unk3 >> d.unk4 >> d.difficulty >>
-           d.team >> d.color_rgba >> d.unk8 >> d.livery;
-}
+std::istream& operator>>(std::istream& is, Driver& d);
 
 class Ghost {
 public:
@@ -213,9 +187,7 @@ public:
     String livery;
 };
 
-std::istream& operator>>(std::istream& is, Ghost& g) {
-    return is >> g.id >> g.name >> g.unk3 >> g.livery;
-}
+std::istream& operator>>(std::istream& is, Ghost& g);
 
 class VehicleClass {
 public:
@@ -224,9 +196,7 @@ public:
     FixedArray<Integer, 50> vehicle_ids;
 };
 
-std::istream& operator>>(std::istream& is, VehicleClass& v) {
-    return is >> v.id >> v.name >> v.vehicle_ids;
-}
+std::istream& operator>>(std::istream& is, VehicleClass& v);
 
 class Event {
 public:
@@ -263,15 +233,7 @@ public:
     FixedArray<Integer, 12> fame_earned_on_positions;
 };
 
-std::istream& operator>>(std::istream& is, Event& e) {
-    return is >> e.position_in_championship >> e.race_id >> e.event_id >> e.unk4 >> e.trophy_id >>
-           e.tour_menu_lams_id >> e.gameplay_menu_lams_id >> e.unlock_group >> e.group_position >> e.type_texture >>
-           e.texture_small >> e.texture_small_position >> e.texture_large >> e.entry_requirements >>
-           e.fame_per_star_earned >> e.trophy_completed >> e.track >> e.time_of_day >> e.speed_of_time >> e.weather >>
-           e.precipitation >> e.precipitation_time_scalar >> e.unk5 >> e.difficulty >> e.number_of_laps >> e.type >>
-           e.objectives >> e.extra_star_requirements >> e.grid_modifier >> e.ai_grid_definitions >>
-           e.fame_earned_on_positions;
-}
+std::istream& operator>>(std::istream& is, Event& e);
 
 class Collection {
 public:
@@ -281,9 +243,7 @@ public:
     Integer unk3;
 };
 
-std::istream& operator>>(std::istream& is, Collection& c) {
-    return is >> c.id >> c.name >> c.unk2 >> c.unk3;
-}
+std::istream& operator>>(std::istream& is, Collection& c);
 
 class DcTour {
 public:
@@ -298,11 +258,10 @@ public:
     Array<VehicleClass> vehicle_classes;
     Array<Event> events;
     Array<Collection> collections;
+
+    static DcTour FromBinaryFile(const std::string& path);
 };
 
-std::istream& operator>>(std::istream& is, DcTour& t) {
-    return is >> t.tourdata_str >> t.version >> t.tours >> t.objectives >> t.faceoffs >> t.unlock_groups >> t.drivers >>
-           t.ghosts >> t.vehicle_classes >> t.events >> t.collections;
-}
+std::istream& operator>>(std::istream& is, DcTour& t);
 
 } // namespace Evo

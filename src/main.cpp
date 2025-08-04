@@ -1,5 +1,6 @@
 #include "common/logging.h"
 #include "common/types.h"
+#include "tours.h"
 
 #include "string"
 #include "filesystem"
@@ -25,6 +26,8 @@ int main(s32 argc, char** argv) {
 
     if (op == "-j" || op == "--to-json") {
         LOG_INFO("Converting {} to json...", in);
+        Evo::DcTour tour = Evo::DcTour::FromBinaryFile(in);
+        LOG_INFO("Name of the third driver: {}", tour.drivers[2].name);
     } else if (op == "-b" || op == "--to-binary") {
         LOG_ERROR("Unimplemented operation json -> binary");
     } else {
