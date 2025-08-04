@@ -19,7 +19,7 @@ int main(s32 argc, char** argv) {
     std::string op = argv[1], in = argv[2], out = argv[3];
 
     if (!std::filesystem::is_regular_file(in)) {
-        LOG_ERROR("{} does not exist or is not a file", in);
+        LOG_ERROR("\"{}\" does not exist or is not a file", in);
         return 1;
     }
 
