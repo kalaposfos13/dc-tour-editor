@@ -31,7 +31,7 @@ jobs:
           -S ${{ github.workspace }}
 
       - name: Build
-        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config Release --parallel $env:NUMBER_OF_PROCESSORS
 
       - uses: actions/upload-artifact@v4
         with:
@@ -61,7 +61,7 @@ jobs:
           -S ${{ github.workspace }}
 
       - name: Build
-        run: cmake --build ${{ steps.strings.outputs.build-output-dir }}
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --parallel $(nproc)
 
       - uses: actions/upload-artifact@v4
         with:
