@@ -419,4 +419,5 @@ FodyWeavers.xsd
 .idea
 cmake-build-*
 
-output.json
+output*.json
+output*.tour

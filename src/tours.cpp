@@ -214,7 +214,11 @@ void DcTour::LoadBinaryFile(const std::string& path) {
 
 void DcTour::LoadJsonFile(const std::string& path) {
     LOG_INFO("Loading \"{}\"...", path);
-    LOG_ERROR("Stub");
+    std::ifstream is(path, std::ios::binary);
+    ordered_json j;
+    is >> j;
+    *this = j.get<DcTour>();
+    return;
 }
 
 void DcTour::SaveBinaryFile(const std::string& path) {

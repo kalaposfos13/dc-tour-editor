@@ -35,6 +35,10 @@ int main(s32 argc, char** argv) {
         Evo::DcTour tour;
         tour.LoadJsonFile(in);
         tour.SaveBinaryFile(out);
+    } else if (op == "-jj") {
+        Evo::DcTour tour;
+        tour.LoadJsonFile(in);
+        tour.SaveJsonFile(out);
     } else {
         LOG_ERROR("Unknown operation {}", op);
         print_usage();
