@@ -95,7 +95,7 @@ DBAJO(Event, position_in_championship, race_id, event_id, unk4, trophy_id, tour_
       extra_star_requirements, grid_modifier, ai_grid_definitions, fame_earned_on_positions)
 DBAJO(VehicleClass, id, name, vehicle_ids)
 DBAJO(Ghost, id, name, unk3, livery)
-DBAJO(Driver, id, unk2, name, country, pronoun, race, unk3, unk4, difficulty, team, color_rgba, unk8, livery)
+DBAJO(Driver, id, unk2, name, country, pronoun, race, head_type, body_type, difficulty, team, color_rgba, unk8, livery)
 DBAJO(UnlockGroup, id, tour_id, unk3, stars_to_unlock, unk5, unk6, unk7, unk8)
 DBAJO(FaceOff, id, unk2, name)
 DBAJO(Objective, id, objective_str, operator_type, lams_id, unk3)

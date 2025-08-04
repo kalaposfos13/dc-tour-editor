@@ -309,8 +309,8 @@ public:
     String country;
     String pronoun;
     String race;
-    Integer unk3;
-    Integer unk4;
+    Integer head_type;
+    Integer body_type;
     String difficulty;
     String team;
     Integer color_rgba;
