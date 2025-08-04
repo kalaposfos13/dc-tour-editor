@@ -21,7 +21,7 @@ void PrintLog(const char* log_level, const char* file, unsigned int line_num, co
         message = fmt::vformat(format, fmt::make_format_args(args...));
     }
 
-    fmt::println("[Dc.Tour] {}:{} <{}> {}: {}", file, line_num, log_level, function, message);
+    fmt::println("[Dc.Tour] <{}> {}:{} {}: {}", log_level, file, line_num, function, message);
 }
 
 #define LOG_DEBUG(...) PrintLog("Debug", TrimSourcePath(__FILE__), __LINE__, __func__, __VA_ARGS__)
