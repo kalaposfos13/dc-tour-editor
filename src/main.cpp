@@ -2,13 +2,14 @@
 #include "common/types.h"
 #include "tours.h"
 
-#include "string"
 #include "filesystem"
+#include "string"
 
 void print_usage() {
     fmt::println("dc-tour-editor <operation> <input> <output>");
     fmt::println("  -j, --to-json <path/to/input> <path/to/output>:  Converts a binary formatted dc.tour file to json");
-    fmt::println("  -b, --to-binary <path/to/input> <path/to/output>:  Converts a json formatted dc.tour file to binary");
+    fmt::println(
+        "  -b, --to-binary <path/to/input> <path/to/output>:  Converts a json formatted dc.tour file to binary");
 }
 
 int main(s32 argc, char** argv) {
@@ -26,10 +27,14 @@ int main(s32 argc, char** argv) {
 
     if (op == "-j" || op == "--to-json") {
         LOG_INFO("Converting {} to json...", in);
-        Evo::DcTour tour = Evo::DcTour::FromBinaryFile(in);
-        LOG_INFO("Name of the third driver: {}", tour.drivers[2].name);
+        Evo::DcTour tour;
+        tour.LoadBinaryFile(in);
+        tour.SaveJsonFile(out);
     } else if (op == "-b" || op == "--to-binary") {
-        LOG_ERROR("Unimplemented operation json -> binary");
+        LOG_INFO("Converting {} to binary...", in);
+        Evo::DcTour tour;
+        tour.LoadJsonFile(in);
+        tour.SaveBinaryFile(out);
     } else {
         LOG_ERROR("Unknown operation {}", op);
         print_usage();
