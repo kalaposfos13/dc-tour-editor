@@ -7,9 +7,8 @@
 
 void print_usage() {
     fmt::println("dc-tour-editor <operation> <input> <output>");
-    fmt::println("  -j, --to-json <path/to/input> <path/to/output>:  Converts a binary formatted dc.tour file to json");
-    fmt::println(
-        "  -b, --to-binary <path/to/input> <path/to/output>:  Converts a json formatted dc.tour file to binary");
+    fmt::println("  -j, --to-json <binary/input/file> <json/output/file>:  Converts a binary formatted dc.tour file to json");
+    fmt::println("  -b, --to-binary <json/input/file> <binary/output/file>:  Converts a json formatted dc.tour file to binary");
 }
 
 int main(s32 argc, char** argv) {
