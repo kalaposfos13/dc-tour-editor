@@ -9,6 +9,18 @@
 #include "common/types.h"
 #include "json.hpp"
 
+#define JSON_STREAM_IN(x) << t.x
+#define JSON_STREAM_OUT(x) >> t.x
+
+#define DECLARE_BINARY_AND_JSON_OPERATIONS(Type, ...)                                                                  \
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Type, __VA_ARGS__)                                                              \
+    std::istream& operator>>(std::istream& is, Type& t) {                                                              \
+        return is NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(JSON_STREAM_OUT, __VA_ARGS__));                             \
+    }                                                                                                                  \
+    std::ostream& operator<<(std::ostream& os, Type& t) {                                                              \
+        return os NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(JSON_STREAM_IN, __VA_ARGS__));                              \
+    }
+
 namespace Evo {
 
 using nlohmann::ordered_json;
@@ -40,8 +52,6 @@ inline void from_json(const nlohmann::ordered_json& j, Integer& i) {
     }
     i.data = j.get<s32>();
 }
-std::istream& operator>>(std::istream& is, Integer& i);
-std::ostream& operator<<(std::ostream& os, Integer& i);
 
 class Float {
 public:
@@ -71,9 +81,6 @@ inline void from_json(const nlohmann::ordered_json& j, Float& f) {
     f.data = j.get<f32>();
 }
 
-std::istream& operator>>(std::istream& is, Float& f);
-std::ostream& operator<<(std::ostream& os, Float& f);
-
 class Boolean {
 public:
     s32 data;
@@ -102,8 +109,6 @@ inline void from_json(const nlohmann::ordered_json& j, Boolean& b) {
     }
     b.data = j.get<bool>() ? 1 : 0;
 }
-std::istream& operator>>(std::istream& is, Boolean& b);
-std::ostream& operator<<(std::ostream& os, Boolean& b);
 
 class String {
 public:
@@ -139,8 +144,6 @@ inline void from_json(const nlohmann::ordered_json& j, String& s) {
     std::copy(tmp.begin(), tmp.end(), s.data.begin());
     s.data[s.len.data] = '\0';
 }
-std::istream& operator>>(std::istream& is, String& s);
-std::ostream& operator<<(std::ostream& os, String& s);
 
 class HexString : public String {};
 inline void to_json(nlohmann::ordered_json& j, const HexString& s) {
@@ -245,11 +248,6 @@ public:
     Integer silver_objective_target_int;
     String silver_objective_target_str;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EventObjective, gold_objective_type, gold_objective_target_int,
-                                   gold_objective_target_str, silver_objective_type, silver_objective_target_int,
-                                   silver_objective_target_str)
-std::istream& operator>>(std::istream& is, EventObjective& r);
-std::ostream& operator<<(std::ostream& os, EventObjective& r);
 
 class AiGridDefinition {
 public:
@@ -258,9 +256,6 @@ public:
     Float unk3;
     Float unk4;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AiGridDefinition, driver_id, car_id, unk3, unk4)
-std::istream& operator>>(std::istream& is, AiGridDefinition& d);
-std::ostream& operator<<(std::ostream& os, AiGridDefinition& d);
 
 class Tour {
 public:
@@ -277,11 +272,6 @@ public:
     Integer license_type;
     Integer included_in_collection;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Tour, id, lams_id, unk3, license_mask, menu_texture, texture_tile_set,
-                                   is_tour_active, unk8, dlc_requirement, completed_texture, license_type,
-                                   included_in_collection)
-std::istream& operator>>(std::istream& is, Tour& t);
-std::ostream& operator<<(std::ostream& os, Tour& t);
 
 class Objective {
 public:
@@ -291,9 +281,6 @@ public:
     String lams_id;
     String unk3;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Objective, id, objective_str, operator_type, lams_id, unk3)
-std::istream& operator>>(std::istream& is, Objective& o);
-std::ostream& operator<<(std::ostream& os, Objective& o);
 
 class FaceOff {
 public:
@@ -301,9 +288,6 @@ public:
     String unk2;
     String name;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(FaceOff, id, unk2, name)
-std::istream& operator>>(std::istream& is, FaceOff& f);
-std::ostream& operator<<(std::ostream& os, FaceOff& f);
 
 class UnlockGroup {
 public:
@@ -316,9 +300,6 @@ public:
     String unk7;
     String unk8;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(UnlockGroup, id, tour_id, unk3, stars_to_unlock, unk5, unk6, unk7, unk8)
-std::istream& operator>>(std::istream& is, UnlockGroup& u);
-std::ostream& operator<<(std::ostream& os, UnlockGroup& u);
 
 class Driver {
 public:
@@ -336,10 +317,6 @@ public:
     String unk8;
     String livery;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Driver, id, unk2, name, country, pronoun, race, unk3, unk4, difficulty, team,
-                                   color_rgba, unk8, livery)
-std::istream& operator>>(std::istream& is, Driver& d);
-std::ostream& operator<<(std::ostream& os, Driver& d);
 
 class Ghost {
 public:
@@ -348,9 +325,6 @@ public:
     String unk3;
     String livery;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Ghost, id, name, unk3, livery)
-std::istream& operator>>(std::istream& is, Ghost& g);
-std::ostream& operator<<(std::ostream& os, Ghost& g);
 
 class VehicleClass {
 public:
@@ -358,9 +332,6 @@ public:
     String name;
     FixedArray<Integer, 50> vehicle_ids;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(VehicleClass, id, name, vehicle_ids)
-std::istream& operator>>(std::istream& is, VehicleClass& v);
-std::ostream& operator<<(std::ostream& os, VehicleClass& v);
 
 class Event {
 public:
@@ -396,15 +367,6 @@ public:
     FixedArray<AiGridDefinition, 12> ai_grid_definitions;
     FixedArray<Integer, 12> fame_earned_on_positions;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Event, position_in_championship, race_id, event_id, unk4, trophy_id,
-                                   tour_menu_lams_id, gameplay_menu_lams_id, unlock_group, group_position, type_texture,
-                                   texture_small, texture_small_position, texture_large, entry_requirements,
-                                   fame_per_star_earned, trophy_completed, track, time_of_day, speed_of_time, weather,
-                                   precipitation, precipitation_time_scalar, unk5, difficulty, number_of_laps, type,
-                                   objectives, extra_star_requirements, grid_modifier, ai_grid_definitions,
-                                   fame_earned_on_positions)
-std::istream& operator>>(std::istream& is, Event& e);
-std::ostream& operator<<(std::ostream& os, Event& e);
 
 class Collection {
 public:
@@ -413,9 +375,6 @@ public:
     String unk2;
     Integer unk3;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Collection, id, name, unk2, unk3)
-std::istream& operator>>(std::istream& is, Collection& c);
-std::ostream& operator<<(std::ostream& os, Collection& c);
 
 class DcTour {
 public:
@@ -437,10 +396,5 @@ public:
     void SaveBinaryFile(const std::string& path);
     void SaveJsonFile(const std::string& path);
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DcTour, tourdata_str, version, tours, objectives, faceoffs, unlock_groups, drivers,
-                                   ghosts, vehicle_classes, events, collections)
-
-std::istream& operator>>(std::istream& is, DcTour& t);
-std::ostream& operator<<(std::ostream& os, DcTour& t);
 
 } // namespace Evo

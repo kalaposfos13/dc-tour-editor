@@ -33,62 +33,9 @@ std::ostream& write_le(std::ostream& os, T value) {
     return os;
 }
 
-std::istream& operator>>(std::istream& is, DcTour& t) {
-    return is >> t.tourdata_str >> t.version >> t.tours >> t.objectives >> t.faceoffs >> t.unlock_groups >> t.drivers >>
-           t.ghosts >> t.vehicle_classes >> t.events >> t.collections;
-}
-
-std::istream& operator>>(std::istream& is, Collection& c) {
-    return is >> c.id >> c.name >> c.unk2 >> c.unk3;
-}
-
-std::istream& operator>>(std::istream& is, Event& e) {
-    return is >> e.position_in_championship >> e.race_id >> e.event_id >> e.unk4 >> e.trophy_id >>
-           e.tour_menu_lams_id >> e.gameplay_menu_lams_id >> e.unlock_group >> e.group_position >> e.type_texture >>
-           e.texture_small >> e.texture_small_position >> e.texture_large >> e.entry_requirements >>
-           e.fame_per_star_earned >> e.trophy_completed >> e.track >> e.time_of_day >> e.speed_of_time >> e.weather >>
-           e.precipitation >> e.precipitation_time_scalar >> e.unk5 >> e.difficulty >> e.number_of_laps >> e.type >>
-           e.objectives >> e.extra_star_requirements >> e.grid_modifier >> e.ai_grid_definitions >>
-           e.fame_earned_on_positions;
-}
-
-std::istream& operator>>(std::istream& is, VehicleClass& v) {
-    return is >> v.id >> v.name >> v.vehicle_ids;
-}
-
-std::istream& operator>>(std::istream& is, Ghost& g) {
-    return is >> g.id >> g.name >> g.unk3 >> g.livery;
-}
-
-std::istream& operator>>(std::istream& is, Driver& d) {
-    return is >> d.id >> d.unk2 >> d.name >> d.country >> d.pronoun >> d.race >> d.unk3 >> d.unk4 >> d.difficulty >>
-           d.team >> d.color_rgba >> d.unk8 >> d.livery;
-}
-
-std::istream& operator>>(std::istream& is, UnlockGroup& u) {
-    return is >> u.id >> u.tour_id >> u.unk3 >> u.stars_to_unlock >> u.unk5 >> u.unk6 >> u.unk7 >> u.unk8;
-}
-
-std::istream& operator>>(std::istream& is, FaceOff& f) {
-    return is >> f.id >> f.unk2 >> f.name;
-}
-
-std::istream& operator>>(std::istream& is, Objective& o) {
-    return is >> o.id >> o.objective_str >> o.operator_type >> o.lams_id >> o.unk3;
-}
-
-std::istream& operator>>(std::istream& is, Tour& t) {
-    return is >> t.id >> t.lams_id >> t.unk3 >> t.license_mask >> t.menu_texture >> t.texture_tile_set >> t.is_tour_active >>
-           t.unk8 >> t.dlc_requirement >> t.completed_texture >> t.license_type >> t.included_in_collection;
-}
-
-std::istream& operator>>(std::istream& is, AiGridDefinition& d) {
-    return is >> d.driver_id >> d.car_id >> d.unk3 >> d.unk4;
-}
-
-std::istream& operator>>(std::istream& is, EventObjective& r) {
-    return is >> r.gold_objective_type >> r.gold_objective_target_int >> r.gold_objective_target_str >>
-           r.silver_objective_type >> r.silver_objective_target_int >> r.silver_objective_target_str;
+std::istream& operator>>(std::istream& is, Integer& i) {
+    i.data = read_le<u32>(is);
+    return is;
 }
 
 std::istream& operator>>(std::istream& is, String& s) {
@@ -111,69 +58,6 @@ std::istream& operator>>(std::istream& is, Float& f) {
                     (static_cast<u32>(bytes[2]) << 16) | (static_cast<u32>(bytes[3]) << 24);
     std::memcpy(&f.data, &bits, sizeof(f.data));
     return is;
-}
-
-std::istream& operator>>(std::istream& is, Integer& i) {
-    i.data = read_le<u32>(is);
-    return is;
-}
-
-std::ostream& operator<<(std::ostream& os, DcTour& t) {
-    return os << t.tourdata_str << t.version << t.tours << t.objectives << t.faceoffs << t.unlock_groups << t.drivers
-              << t.ghosts << t.vehicle_classes << t.events << t.collections;
-}
-
-std::ostream& operator<<(std::ostream& os, Collection& c) {
-    return os << c.id << c.name << c.unk2 << c.unk3;
-}
-
-std::ostream& operator<<(std::ostream& os, Event& e) {
-    return os << e.position_in_championship << e.race_id << e.event_id << e.unk4 << e.trophy_id << e.tour_menu_lams_id
-              << e.gameplay_menu_lams_id << e.unlock_group << e.group_position << e.type_texture << e.texture_small
-              << e.texture_small_position << e.texture_large << e.entry_requirements << e.fame_per_star_earned
-              << e.trophy_completed << e.track << e.time_of_day << e.speed_of_time << e.weather << e.precipitation
-              << e.precipitation_time_scalar << e.unk5 << e.difficulty << e.number_of_laps << e.type << e.objectives
-              << e.extra_star_requirements << e.grid_modifier << e.ai_grid_definitions << e.fame_earned_on_positions;
-}
-
-std::ostream& operator<<(std::ostream& os, VehicleClass& v) {
-    return os << v.id << v.name << v.vehicle_ids;
-}
-
-std::ostream& operator<<(std::ostream& os, Ghost& g) {
-    return os << g.id << g.name << g.unk3 << g.livery;
-}
-
-std::ostream& operator<<(std::ostream& os, Driver& d) {
-    return os << d.id << d.unk2 << d.name << d.country << d.pronoun << d.race << d.unk3 << d.unk4 << d.difficulty
-              << d.team << d.color_rgba << d.unk8 << d.livery;
-}
-
-std::ostream& operator<<(std::ostream& os, UnlockGroup& u) {
-    return os << u.id << u.tour_id << u.unk3 << u.stars_to_unlock << u.unk5 << u.unk6 << u.unk7 << u.unk8;
-}
-
-std::ostream& operator<<(std::ostream& os, FaceOff& f) {
-    return os << f.id << f.unk2 << f.name;
-}
-
-std::ostream& operator<<(std::ostream& os, Objective& o) {
-    return os << o.id << o.objective_str << o.operator_type << o.lams_id << o.unk3;
-}
-
-std::ostream& operator<<(std::ostream& os, Tour& t) {
-    return os << t.id << t.lams_id << t.unk3 << t.license_mask << t.menu_texture << t.texture_tile_set << t.is_tour_active
-              << t.unk8 << t.dlc_requirement << t.completed_texture << t.license_type
-              << t.included_in_collection;
-}
-
-std::ostream& operator<<(std::ostream& os, AiGridDefinition& d) {
-    return os << d.driver_id << d.car_id << d.unk3 << d.unk4;
-}
-
-std::ostream& operator<<(std::ostream& os, EventObjective& r) {
-    return os << r.gold_objective_type << r.gold_objective_target_int << r.gold_objective_target_str
-              << r.silver_objective_type << r.silver_objective_target_int << r.silver_objective_target_str;
 }
 
 std::ostream& operator<<(std::ostream& os, String& s) {
@@ -199,6 +83,31 @@ std::ostream& operator<<(std::ostream& os, Integer& i) {
     write_le<s32>(os, i);
     return os;
 }
+
+DECLARE_BINARY_AND_JSON_OPERATIONS(DcTour, tourdata_str, version, tours, objectives, faceoffs, unlock_groups, drivers,
+                                   ghosts, vehicle_classes, events, collections)
+DECLARE_BINARY_AND_JSON_OPERATIONS(Collection, id, name, unk2, unk3)
+DECLARE_BINARY_AND_JSON_OPERATIONS(Event, position_in_championship, race_id, event_id, unk4, trophy_id,
+                                   tour_menu_lams_id, gameplay_menu_lams_id, unlock_group, group_position, type_texture,
+                                   texture_small, texture_small_position, texture_large, entry_requirements,
+                                   fame_per_star_earned, trophy_completed, track, time_of_day, speed_of_time, weather,
+                                   precipitation, precipitation_time_scalar, unk5, difficulty, number_of_laps, type,
+                                   objectives, extra_star_requirements, grid_modifier, ai_grid_definitions,
+                                   fame_earned_on_positions)
+DECLARE_BINARY_AND_JSON_OPERATIONS(VehicleClass, id, name, vehicle_ids)
+DECLARE_BINARY_AND_JSON_OPERATIONS(Ghost, id, name, unk3, livery)
+DECLARE_BINARY_AND_JSON_OPERATIONS(Driver, id, unk2, name, country, pronoun, race, unk3, unk4, difficulty, team,
+                                   color_rgba, unk8, livery)
+DECLARE_BINARY_AND_JSON_OPERATIONS(UnlockGroup, id, tour_id, unk3, stars_to_unlock, unk5, unk6, unk7, unk8)
+DECLARE_BINARY_AND_JSON_OPERATIONS(FaceOff, id, unk2, name)
+DECLARE_BINARY_AND_JSON_OPERATIONS(Objective, id, objective_str, operator_type, lams_id, unk3)
+DECLARE_BINARY_AND_JSON_OPERATIONS(Tour, id, lams_id, unk3, license_mask, menu_texture, texture_tile_set,
+                                   is_tour_active, unk8, dlc_requirement, completed_texture, license_type,
+                                   included_in_collection)
+DECLARE_BINARY_AND_JSON_OPERATIONS(AiGridDefinition, driver_id, car_id, unk3, unk4)
+DECLARE_BINARY_AND_JSON_OPERATIONS(EventObjective, gold_objective_type, gold_objective_target_int,
+                                   gold_objective_target_str, silver_objective_type, silver_objective_target_int,
+                                   silver_objective_target_str)
 
 void DcTour::LoadBinaryFile(const std::string& path) {
     LOG_INFO("Loading \"{}\"...", path);
