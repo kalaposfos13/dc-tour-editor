@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "common/types.h"
+#include "json.hpp"
 
 namespace Evo {
 
@@ -71,14 +72,12 @@ public:
 template <typename T>
 std::istream& operator>>(std::istream& is, Array<T>& a) {
     is >> a.name >> a.count;
+    a.data.resize(a.count);
     for (int i = 0; i < a.count; i++) {
-        T temp;
-        is >> temp;
-        a.data.push_back(temp);
+        is >> a.data[i];
     }
     return is;
 }
-
 template <typename T>
 std::ostream& operator<<(std::ostream& os, Array<T>& a) {
     os << a.name << a.count;
@@ -101,7 +100,6 @@ std::istream& operator>>(std::istream& is, FixedArray<T, size>& a) {
     }
     return is;
 }
-
 template <typename T, s32 size>
 std::ostream& operator<<(std::ostream& os, FixedArray<T, size>& a) {
     for (size_t i = 0; i < a.data.size(); i++) {
@@ -299,6 +297,21 @@ public:
 
     void SaveBinaryFile(const std::string& path);
     void SaveJsonFile(const std::string& path);
+    operator nlohmann::json() {
+        return {
+            {"tourdata_str", tourdata_str.str()},
+            {"version", version.data},
+            // {"tours", tours},
+            // {"objectives", objectives},
+            // {"faceoffs", faceoffs},
+            // {"unlock_groups", unlock_groups},
+            // {"drivers", drivers},
+            // {"ghosts", ghosts},
+            // {"vehicle_classes", vehicle_classes},
+            // {"events", events},
+            // {"collections", collections},
+        };
+    }
 };
 
 std::istream& operator>>(std::istream& is, DcTour& t);

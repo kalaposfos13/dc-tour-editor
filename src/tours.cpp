@@ -1,10 +1,12 @@
 #include "common/assert.h"
 #include "common/logging.h"
+#include "json.hpp"
 #include "tours.h"
 
 #include <filesystem>
 #include <fstream>
 #include <istream>
+#include <ostream>
 
 namespace Evo {
 
@@ -115,8 +117,8 @@ std::istream& operator>>(std::istream& is, Integer& i) {
 }
 
 std::ostream& operator<<(std::ostream& os, DcTour& t) {
-    return os << t.tourdata_str << t.version << t.tours << t.objectives << t.faceoffs << t.unlock_groups << t.drivers <<
-           t.ghosts << t.vehicle_classes << t.events << t.collections;
+    return os << t.tourdata_str << t.version << t.tours << t.objectives << t.faceoffs << t.unlock_groups << t.drivers
+              << t.ghosts << t.vehicle_classes << t.events << t.collections;
 }
 
 std::ostream& operator<<(std::ostream& os, Collection& c) {
@@ -124,13 +126,12 @@ std::ostream& operator<<(std::ostream& os, Collection& c) {
 }
 
 std::ostream& operator<<(std::ostream& os, Event& e) {
-    return os << e.position_in_championship << e.race_id << e.event_id << e.unk4 << e.trophy_id <<
-           e.tour_menu_lams_id << e.gameplay_menu_lams_id << e.unlock_group << e.group_position << e.type_texture <<
-           e.texture_small << e.texture_small_position << e.texture_large << e.entry_requirements <<
-           e.fame_per_star_earned << e.trophy_completed << e.track << e.time_of_day << e.speed_of_time << e.weather <<
-           e.precipitation << e.precipitation_time_scalar << e.unk5 << e.difficulty << e.number_of_laps << e.type <<
-           e.objectives << e.extra_star_requirements << e.grid_modifier << e.ai_grid_definitions <<
-           e.fame_earned_on_positions;
+    return os << e.position_in_championship << e.race_id << e.event_id << e.unk4 << e.trophy_id << e.tour_menu_lams_id
+              << e.gameplay_menu_lams_id << e.unlock_group << e.group_position << e.type_texture << e.texture_small
+              << e.texture_small_position << e.texture_large << e.entry_requirements << e.fame_per_star_earned
+              << e.trophy_completed << e.track << e.time_of_day << e.speed_of_time << e.weather << e.precipitation
+              << e.precipitation_time_scalar << e.unk5 << e.difficulty << e.number_of_laps << e.type << e.objectives
+              << e.extra_star_requirements << e.grid_modifier << e.ai_grid_definitions << e.fame_earned_on_positions;
 }
 
 std::ostream& operator<<(std::ostream& os, VehicleClass& v) {
@@ -142,8 +143,8 @@ std::ostream& operator<<(std::ostream& os, Ghost& g) {
 }
 
 std::ostream& operator<<(std::ostream& os, Driver& d) {
-    return os << d.id << d.unk2 << d.name << d.country << d.pronoun << d.race << d.unk3 << d.unk4 << d.difficulty <<
-           d.team << d.color_rgba << d.unk8 << d.livery;
+    return os << d.id << d.unk2 << d.name << d.country << d.pronoun << d.race << d.unk3 << d.unk4 << d.difficulty
+              << d.team << d.color_rgba << d.unk8 << d.livery;
 }
 
 std::ostream& operator<<(std::ostream& os, UnlockGroup& u) {
@@ -159,8 +160,9 @@ std::ostream& operator<<(std::ostream& os, Objective& o) {
 }
 
 std::ostream& operator<<(std::ostream& os, Tour& t) {
-    return os << t.id << t.tour_lams_id << t.unk3 << t.license_mask << t.menu_texture << t.unk6 << t.is_tour_active <<
-           t.unk8 << t.dlc_requirement << t.tour_completed_texture << t.tour_license_type << t.included_in_collection;
+    return os << t.id << t.tour_lams_id << t.unk3 << t.license_mask << t.menu_texture << t.unk6 << t.is_tour_active
+              << t.unk8 << t.dlc_requirement << t.tour_completed_texture << t.tour_license_type
+              << t.included_in_collection;
 }
 
 std::ostream& operator<<(std::ostream& os, AiGridDefinition& d) {
@@ -168,8 +170,8 @@ std::ostream& operator<<(std::ostream& os, AiGridDefinition& d) {
 }
 
 std::ostream& operator<<(std::ostream& os, EventObjective& r) {
-    return os << r.gold_objective_type << r.gold_objective_target_int << r.gold_objective_target_str <<
-           r.silver_objective_type << r.silver_objective_target_int << r.silver_objective_target_str;
+    return os << r.gold_objective_type << r.gold_objective_target_int << r.gold_objective_target_str
+              << r.silver_objective_type << r.silver_objective_target_int << r.silver_objective_target_str;
 }
 
 std::ostream& operator<<(std::ostream& os, String& s) {
@@ -197,6 +199,7 @@ std::ostream& operator<<(std::ostream& os, Integer& i) {
 }
 
 void DcTour::LoadBinaryFile(const std::string& path) {
+    LOG_INFO("Loading \"{}\"...", path);
     std::ifstream is(path, std::ios::binary);
     char signature[5], endianness[5];
     DcTour tour = DcTour();
@@ -217,7 +220,10 @@ void DcTour::SaveBinaryFile(const std::string& path) {
 }
 
 void DcTour::SaveJsonFile(const std::string& path) {
-    LOG_ERROR("Stub");
+    LOG_INFO("Saving \"{}\"", path);
+    nlohmann::json json = (nlohmann::json)*this;
+    std::ofstream os(path);
+    os << std::setw(4) << json << std::endl;
 }
 
 } // namespace Evo
