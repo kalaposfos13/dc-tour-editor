@@ -6,9 +6,9 @@ project(${PROJECT_NAME} LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 add_subdirectory(externals)
-
 
 set(FMT_HEADERS
     src/fmt/args.h
