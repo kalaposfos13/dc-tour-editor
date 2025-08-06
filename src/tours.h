@@ -179,14 +179,14 @@ public:
 };
 template <typename T>
 inline void to_json(nlohmann::ordered_json& j, const Array<T>& arr) {
-    j = nlohmann::ordered_json{{"name", arr.name}, {"size", arr.size}, {"data", arr.data}};
+    j = nlohmann::ordered_json{{"name", arr.name}, {"data", arr.data}};
 }
 
 template <typename T>
 inline void from_json(const nlohmann::ordered_json& j, Array<T>& arr) {
     arr.name = j.at("name").get<String>();
-    arr.size = j.at("size").get<Integer>();
     arr.data = j.at("data").get<std::vector<T>>();
+    arr.size = arr.data.size();
 }
 template <typename T>
 std::istream& operator>>(std::istream& is, Array<T>& a) {
@@ -213,12 +213,12 @@ public:
 };
 template <typename T, s32 size>
 inline void to_json(nlohmann::ordered_json& j, const FixedArray<T, size>& a) {
-    j = nlohmann::ordered_json{{"size", size}, {"data", a.data}};
+    j = a.data;
 }
 
 template <typename T, s32 size>
 inline void from_json(const nlohmann::ordered_json& j, FixedArray<T, size>& arr) {
-    auto d = j.at("data").get<std::vector<T>>();
+    auto d = j.get<std::vector<T>>();
     if (d.size() != size) {
         UNREACHABLE();
     }
