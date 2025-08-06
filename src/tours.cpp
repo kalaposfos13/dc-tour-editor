@@ -60,6 +60,11 @@ std::istream& operator>>(std::istream& is, Float& f) {
     return is;
 }
 
+std::ostream& operator<<(std::ostream& os, Integer& i) {
+    write_le<s32>(os, i);
+    return os;
+}
+
 std::ostream& operator<<(std::ostream& os, String& s) {
     os << s.len;
     os.write(s.data.data(), s.len);
@@ -76,11 +81,6 @@ std::ostream& operator<<(std::ostream& os, Float& f) {
     u32 bits;
     std::memcpy(&bits, &f.data, sizeof(bits));
     write_le<u32>(os, bits);
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, Integer& i) {
-    write_le<s32>(os, i);
     return os;
 }
 
