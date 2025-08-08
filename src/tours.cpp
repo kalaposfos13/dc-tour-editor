@@ -99,7 +99,7 @@ void Event::Validate() const {
     }
 }
 
-#define DBAJO(...) DECLARE_BINARY_AND_JSON_OPERATIONS(__VA_ARGS__)
+#define DBAJO(Type, ...) DECLARE_BINARY_AND_JSON_OPERATIONS(Type, __VA_ARGS__)
 DBAJO(DcTour, tourdata_str, version, tours, objectives, faceoffs, unlock_groups, drivers, ghosts, vehicle_classes,
       events, collections)
 DBAJO(Collection, id, name, unk2, unk3)
