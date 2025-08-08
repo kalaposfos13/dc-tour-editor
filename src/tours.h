@@ -170,6 +170,8 @@ public:
     Array<Event> events;
     Array<Collection> collections;
 
+    void Validate() const;
+
     void LoadBinaryFile(const std::string& path);
     void LoadJsonFile(const std::string& path);
 
