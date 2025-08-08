@@ -37,6 +37,7 @@ set(HEADERS
     ${FMT_HEADERS}
     ${COMMON_HEADERS}
     src/tours.h
+    src/common_data_types.h
 )
 
 set(SOURCES

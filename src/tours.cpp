@@ -7,6 +7,7 @@
 #include <fstream>
 #include <istream>
 #include <ostream>
+#include <sstream>
 
 namespace Evo {
 
@@ -84,7 +85,21 @@ std::ostream& operator<<(std::ostream& os, Float& f) {
     return os;
 }
 
-#define DBAJO DECLARE_BINARY_AND_JSON_OPERATIONS
+void Event::Validate() const {
+    int player_def_count = 0;
+    for (int i = 0; i < 12; i++) {
+        if (ai_grid_definitions[i].car_id == -1 && ai_grid_definitions[i].driver_id == -1 &&
+            ai_grid_definitions[i].unk3 == -1.0 && ai_grid_definitions[i].unk4 == -1.0) {
+            player_def_count++;
+        }
+    }
+    if (player_def_count != 1) {
+        LOG_CRITICAL("Incorrect amount of players specified in event {}: {}, please specify exactly one!",
+                     event_id.data, player_def_count);
+    }
+}
+
+#define DBAJO(...) DECLARE_BINARY_AND_JSON_OPERATIONS(__VA_ARGS__)
 DBAJO(DcTour, tourdata_str, version, tours, objectives, faceoffs, unlock_groups, drivers, ghosts, vehicle_classes,
       events, collections)
 DBAJO(Collection, id, name, unk2, unk3)
@@ -104,7 +119,6 @@ DBAJO(Tour, id, lams_id, unk3, license_mask, menu_texture, texture_tile_set, is_
 DBAJO(AiGridDefinition, driver_id, car_id, unk3, unk4)
 DBAJO(EventObjective, gold_objective_type, gold_objective_target_int, gold_objective_target_str, silver_objective_type,
       silver_objective_target_int, silver_objective_target_str)
-#undef DBAJO
 
 void DcTour::LoadBinaryFile(const std::string& path) {
     LOG_INFO("Loading \"{}\"", path);
@@ -129,15 +143,19 @@ void DcTour::LoadJsonFile(const std::string& path) {
 
 void DcTour::SaveBinaryFile(const std::string& path) {
     LOG_INFO("Saving \"{}\"", path);
-    std::ofstream os(path, std::ios::binary);
+    std::ofstream ofs(path, std::ios::binary);
+    std::ostringstream os(std::ios::binary);
     os << "EVOSLITL" << *this;
+    ofs << os.str();
 }
 
 void DcTour::SaveJsonFile(const std::string& path) {
     LOG_INFO("Saving \"{}\"", path);
     nlohmann::ordered_json j = *this;
-    std::ofstream os(path);
+    std::ofstream ofs(path, std::ios::binary);
+    std::ostringstream os(std::ios::binary);
     os << std::setw(2) << j << std::endl;
+    ofs << os.str();
 }
 
 } // namespace Evo
