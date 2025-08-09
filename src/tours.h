@@ -38,16 +38,30 @@ public:
 class Tour : public DataType {
 public:
     Integer id;
+    // this controls the localization reference for the string in gamedir/gui/lams
     String lams_id;
+    // as should be implied, unknown, but always matches lams_id
     String unk3;
+    // should not be implemented in gui, but should be left blank in the file to skip any license checks
     String license_mask;
+    // texture reference from the tile set used for the banner in the tour selection menu
     String menu_texture;
+    // references a tour_tiles*.rpk file in gamedir/newui/art
     Integer texture_tile_set;
+    // should probably always be set to true and not included in the frontend
     Integer is_tour_active;
+    //
     Integer unk8;
+    // the game checks this but we havent been able to make it do anything
     HexString dlc_requirement;
+    //
     String completed_texture;
+    // dlc uses both 02 and 03 as valid ints here, but i couldnt tell you what the difference is.
+    // in the frontend, there should be an option for the tour to be bike related, if so, it
+    // should set this value to 05
     Integer license_type;
+    // this controls if the event is included as part of a season pass, however since
+    // the dlc has been cracked this is functionally irrelevant
     Integer included_in_collection;
 };
 
@@ -57,6 +71,7 @@ public:
     String objective_str;
     String operator_type;
     String lams_id;
+    // always matches objectiveLAMSID
     String unk3;
 };
 
@@ -71,11 +86,13 @@ class UnlockGroup : public DataType {
 public:
     Integer id;
     Integer tour_id;
-    Integer unk3;
+    // 1 - 10 are valid, rest defaults back to 1
+    Integer menu_layout;
     Integer stars_to_unlock;
-    Boolean unk5;
-    String unk6;
-    String unk7;
+    Boolean is_championship;
+    String championship_texture;
+    String lams_id;
+    // same as lams_id
     String unk8;
 };
 
@@ -106,7 +123,9 @@ public:
 
 class VehicleClass : public DataType {
 public:
+    // always g*
     String id;
+    // LAMS reference
     String name;
     FixedArray<Integer, 50> vehicle_ids;
 };
