@@ -421,3 +421,4 @@ cmake-build-*
 
 output*.json
 output*.tour
+*dc.tour*

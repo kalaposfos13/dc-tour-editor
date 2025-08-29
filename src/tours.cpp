@@ -100,7 +100,7 @@ void Event::Validate() const {
 }
 
 void DcTour::Validate() const {
-    ASSERT_MSG(version == 44, "Unsupported version {}", version);
+    ASSERT_MSG(version == 44, "Unsupported version {}", version.data);
 }
 
 #define DBAJO(Type, ...) DECLARE_BINARY_AND_JSON_OPERATIONS(Type, __VA_ARGS__)
@@ -132,7 +132,11 @@ void DcTour::LoadBinaryFile(const std::string& path) {
     is >> signature >> endianness;
     ASSERT_MSG(std::string(signature) == "EVOS", "Signature is {}", signature);
     ASSERT_MSG(std::string(endianness) == "LITL", "Endianness is {}", endianness);
-    is >> *this;
+    try {
+        is >> *this;
+    } catch (std::exception e) {
+        UNREACHABLE_MSG("Error while reading: {}", e.what());
+    }
     return;
 }
 
@@ -141,7 +145,11 @@ void DcTour::LoadJsonFile(const std::string& path) {
     std::ifstream is(path, std::ios::binary);
     ordered_json j;
     is >> j;
-    *this = j.get<DcTour>();
+    try {
+        *this = j.get<DcTour>();
+    } catch (nlohmann::json_abi_v3_12_0::detail::exception& e) {
+        UNREACHABLE_MSG("Error while reading: {}", e.what());
+    }
     return;
 }
 
@@ -149,7 +157,11 @@ void DcTour::SaveBinaryFile(const std::string& path) {
     LOG_INFO("Saving \"{}\"", path);
     std::ofstream ofs(path, std::ios::binary);
     std::ostringstream os(std::ios::binary);
-    os << "EVOSLITL" << *this;
+    try {
+        os << "EVOSLITL" << *this;
+    } catch (std::exception e) {
+        UNREACHABLE_MSG("Error while writing: {}", e.what());
+    }
     ofs << os.str();
 }
 
@@ -158,7 +170,11 @@ void DcTour::SaveJsonFile(const std::string& path) {
     nlohmann::ordered_json j = *this;
     std::ofstream ofs(path, std::ios::binary);
     std::ostringstream os(std::ios::binary);
-    os << std::setw(2) << j << std::endl;
+    try {
+        os << std::setw(2) << j << std::endl;
+    } catch (nlohmann::json_abi_v3_12_0::detail::exception& e) {
+        UNREACHABLE_MSG("Error while writing: {}", e.what());
+    }
     ofs << os.str();
 }
 

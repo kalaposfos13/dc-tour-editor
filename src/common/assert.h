@@ -31,7 +31,7 @@ void assert_fail_impl();
 #define ASSERT_MSG(_a_, ...)                                                                       \
     ([&]() SHAD_NO_INLINE {                                                                        \
         if (!(_a_)) [[unlikely]] {                                                                 \
-        LOG_CRITICAL("Assertion failed!");                                                         \
+        LOG_CRITICAL("Assertion failed!\n" __VA_ARGS__);                                           \
             assert_fail_impl();                                                                    \
         }                                                                                          \
     }())
@@ -44,7 +44,7 @@ void assert_fail_impl();
 
 #define UNREACHABLE_MSG(...)                                                                       \
     do {                                                                                           \
-        LOG_CRITICAL("Unreachable code!");                                                         \
+        LOG_CRITICAL("Unreachable code!\n" __VA_ARGS__);                                           \
         unreachable_impl();                                                                        \
     } while (0)
 

@@ -6,6 +6,44 @@
 #include "json.hpp"
 
 using ordered_json = nlohmann::ordered_json;
+using value_t = nlohmann::json::value_t;
+
+static inline std::string json_value_type_name(value_t t) {
+    switch (t) {
+    case value_t::null:
+        return "null";
+    case value_t::object:
+        return "object";
+    case value_t::array:
+        return "array";
+    case value_t::string:
+        return "string";
+    case value_t::boolean:
+        return "boolean";
+    case value_t::binary:
+        return "binary";
+    case value_t::discarded:
+        return "discarded";
+    case value_t::number_unsigned:
+    case value_t::number_integer:
+        return "integer";
+    case value_t::number_float:
+        return "float";
+    default:
+        return "unknown";
+    }
+}
+
+static inline value_t merge_compatible_types(value_t type) {
+    if (type == value_t::number_unsigned) {
+        return value_t::number_integer;
+    }
+    return type;
+}
+
+#define ASSERT_JSON_TYPE(VALUE, TYPE)                                                                                  \
+    ASSERT_MSG(merge_compatible_types(VALUE.type()) == merge_compatible_types(value_t::TYPE),                          \
+               "Expected '{}', got '{}'", json_value_type_name(value_t::TYPE), json_value_type_name(VALUE));
 
 namespace Evo {
 
@@ -27,9 +65,7 @@ public:
         return data;
     }
     Integer& operator=(const ordered_json& j) {
-        if (!j.is_number_integer()) {
-            UNREACHABLE();
-        }
+        ASSERT_JSON_TYPE(j, number_integer);
         data = j;
         return *this;
     }
@@ -39,9 +75,7 @@ inline void to_json(nlohmann::ordered_json& j, const Integer& i) {
 }
 
 inline void from_json(const nlohmann::ordered_json& j, Integer& i) {
-    if (!j.is_number_integer()) {
-        UNREACHABLE();
-    }
+    ASSERT_JSON_TYPE(j, number_integer);
     i.data = j.get<s32>();
 }
 
@@ -55,9 +89,7 @@ public:
         return data;
     }
     Float& operator=(const ordered_json& j) {
-        if (!j.is_number_float()) {
-            UNREACHABLE();
-        }
+        ASSERT_JSON_TYPE(j, number_float);
         data = j;
         return *this;
     }
@@ -67,9 +99,7 @@ inline void to_json(nlohmann::ordered_json& j, const Float& f) {
 }
 
 inline void from_json(const nlohmann::ordered_json& j, Float& f) {
-    if (!j.is_number_float()) {
-        UNREACHABLE();
-    }
+    ASSERT_JSON_TYPE(j, number_float);
     f.data = j.get<f32>();
 }
 
@@ -83,9 +113,7 @@ public:
         return data != 0;
     }
     Boolean& operator=(const ordered_json& j) {
-        if (!j.is_boolean()) {
-            UNREACHABLE();
-        }
+        ASSERT_JSON_TYPE(j, boolean);
         bool b = j;
         data = b ? 1 : 0;
         return *this;
@@ -96,9 +124,7 @@ inline void to_json(nlohmann::ordered_json& j, const Boolean& b) {
 }
 
 inline void from_json(const nlohmann::ordered_json& j, Boolean& b) {
-    if (!j.is_boolean()) {
-        UNREACHABLE();
-    }
+    ASSERT_JSON_TYPE(j, boolean);
     b.data = j.get<bool>() ? 1 : 0;
 }
 
@@ -127,9 +153,7 @@ inline void to_json(nlohmann::ordered_json& j, const String& s) {
     j = s.str();
 }
 inline void from_json(const nlohmann::ordered_json& j, String& s) {
-    if (!j.is_string()) {
-        UNREACHABLE();
-    }
+    ASSERT_JSON_TYPE(j, string);
     std::string tmp = j.get<std::string>();
     s.len.data = tmp.size();
     s.data.resize(s.len.data + 1);
@@ -142,14 +166,10 @@ inline void to_json(nlohmann::ordered_json& j, const HexString& s) {
     j = s.hex_str();
 }
 inline void from_json(const nlohmann::ordered_json& j, HexString& s) {
-    if (!j.is_string()) {
-        UNREACHABLE();
-    }
+    ASSERT_JSON_TYPE(j, string);
     std::string hex = j.get<std::string>();
     size_t len = hex.size();
-    if (len % 2 != 0) {
-        UNREACHABLE();
-    }
+    ASSERT_MSG(len % 2 == 0, "Hex string '{}' has an odd number of characters", hex);
     s.len.data = len / 2;
     s.data.resize(s.len.data + 1);
     for (s32 i = 0; i < s.len.data; ++i) {
@@ -179,6 +199,7 @@ inline void to_json(nlohmann::ordered_json& j, const Array<T>& arr) {
 
 template <typename T>
 inline void from_json(const nlohmann::ordered_json& j, Array<T>& arr) {
+    ASSERT_JSON_TYPE(j, object);
     arr.name = j.at("name").get<String>();
     arr.data = j.at("data").get<std::vector<T>>();
     arr.size = arr.data.size();
@@ -219,10 +240,9 @@ inline void to_json(nlohmann::ordered_json& j, const FixedArray<T, size>& a) {
 
 template <typename T, s32 size>
 inline void from_json(const nlohmann::ordered_json& j, FixedArray<T, size>& arr) {
+    ASSERT_JSON_TYPE(j, array);
     auto d = j.get<std::vector<T>>();
-    if (d.size() != size) {
-        UNREACHABLE();
-    }
+    ASSERT_MSG(d.size() == size, "Expected array of length {}, got {}", size, d.size());
     std::copy_n(d.begin(), size, arr.data.begin());
 }
 template <typename T, s32 size>
